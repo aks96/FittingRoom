@@ -1,0 +1,8 @@
+{
+  "origin": "https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site",
+  "publicKey": {
+    "crv": "Ed25519",
+    "x": "y2IqtkX6p6_w3BMIMuj-4OyZaO3hFruCIvM3CIFpsY8",
+    "kty": "OKP"
+  }
+}

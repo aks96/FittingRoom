@@ -1,0 +1,1 @@
+export async function POST(){return Response.json({error:'Managed authentication is available only behind the private hosted Sites dispatcher. Local development uses explicit device pairing.'},{status:503,headers:{'Cache-Control':'no-store'}})}
