@@ -1,4 +1,4 @@
-# WearView: local-first launch with a $25/month ceiling
+# yourFittingRoom: local-first launch with a $25/month ceiling
 
 Planning date: 12 October 2026. Current launch scope: **desktop/laptop only, free local generation, a responsive web app, login at first generation, and a $25/month out-of-pocket ceiling**. Mobile inference and paid acceleration are deferred. This document proposes work; it does not enable cloud processing, purchase services, change the app or deploy anything.
 
@@ -26,7 +26,7 @@ The launch strategy is **free local generation first, paid acceleration later if
 
 Local inference has no metered third-party AI fee. Users supply their own hardware and electricity. Our existing measurement was about 103 seconds for one 20-step image on an M5 MacBook Air with 16 GB memory. This is a tested still-photo workflow, not instant video fitting or a benchmark for other devices.
 
-For this tested configuration, roughly 1.5–2 minutes is a useful initial expectation, not an established average across users. Cold model loading can take additional time. Measure several runs on each supported device and publish median and slower-case timings before release. If inference runs on the user's computer, WearView has no metered AI charge. If it runs on the founder's computer for remote users, the founder still supplies electricity, hardware capacity, maintenance and uptime; this is an owner-operated server rather than on-device processing for those users.
+For this tested configuration, roughly 1.5–2 minutes is a useful initial expectation, not an established average across users. Cold model loading can take additional time. Measure several runs on each supported device and publish median and slower-case timings before release. If inference runs on the user's computer, yourFittingRoom has no metered AI charge. If it runs on the founder's computer for remote users, the founder still supplies electricity, hardware capacity, maintenance and uptime; this is an owner-operated server rather than on-device processing for those users.
 
 The current implementation is a development app: Next.js proxies to a loopback Python service, jobs/photos are in memory, and there is no real authentication or persistent credit ledger. Uploading this project to a web host does not make that host's `127.0.0.1` refer to a visitor's computer. A local-first public web app needs a secure installed companion/bridge, or a new browser-native inference implementation. The current Python/PyTorch model does not run in a phone browser. This is a limitation of our current implementation, not a statement that on-device phone inference is impossible.
 
@@ -42,18 +42,18 @@ Download and cache model files on supported devices with clear size/setup inform
 
 ### Compatibility status and proposed test devices
 
-These targets distinguish proven WearView support from hardware worth testing. RAM/VRAM targets below are conservative test configurations, not established minimum requirements or performance guarantees.
+These targets distinguish proven yourFittingRoom support from hardware worth testing. RAM/VRAM targets below are conservative test configurations, not established minimum requirements or performance guarantees.
 
 | Device family/configuration | Current installed local engine | Browser-only generation |
 | --- | --- | --- |
 | Tested M5 MacBook Air, 16 GB memory | Verified on this particular machine; about 103 seconds in one measured test | Not implemented/tested |
-| Apple Silicon M1/M2/M3/M4/M5 MacBook, iMac, Mac mini or Mac Studio, preferably 16 GB+ memory | Good candidates for the Metal adapter; each chip/OS configuration still needs validation | Candidates after browser conversion; no WearView browser support claimed yet |
+| Apple Silicon M1/M2/M3/M4/M5 MacBook, iMac, Mac mini or Mac Studio, preferably 16 GB+ memory | Good candidates for the Metal adapter; each chip/OS configuration still needs validation | Candidates after browser conversion; no yourFittingRoom browser support claimed yet |
 | Windows/Linux PC with NVIDIA RTX 30-series or newer; start tests with 16 GB+ system RAM and 12 GB+ GPU memory | CUDA candidate; installation, driver, memory and result quality need testing | Candidate after conversion on a suitable browser/GPU/runtime combination |
 | Windows/Linux CPU-only machine or other GPU types | Experimental; no usable latency or memory compatibility established by our tests | No support established |
 | 8 GB Macs, older Intel Macs, older GPUs and low-memory laptops | Not a supported launch promise; require separate dependency/memory/performance evaluation | No support established |
 | Android phones/tablets, iPhone and iPad | Current desktop Python setup is not a mobile app | Experimental future targets; model conversion and end-to-end device tests required |
 
-The upstream FASHN CUDA route uses bfloat16 on Ampere-or-newer NVIDIA GPUs, while our Metal adapter uses float16. Hardware acceleration support does not certify the complete WearView application. [FASHN inference notes](https://github.com/fashn-AI/fashn-vton-1.5), [PyTorch Metal backend](https://docs.pytorch.org/docs/2.14/notes/mps.html).
+The upstream FASHN CUDA route uses bfloat16 on Ampere-or-newer NVIDIA GPUs, while our Metal adapter uses float16. Hardware acceleration support does not certify the complete yourFittingRoom application. [FASHN inference notes](https://github.com/fashn-AI/fashn-vton-1.5), [PyTorch Metal backend](https://docs.pytorch.org/docs/2.14/notes/mps.html).
 
 Initial release test matrix: an older 16 GB Apple Silicon Mac, a newer 16 GB Apple Silicon Mac and a Windows NVIDIA desktop with adequate VRAM, plus deliberate tests of unsupported/low-memory cases. Phones are deferred. Do not publish support based only on chipset or WebGPU availability. Distinguish the responsive website working from AI inference working locally. Classify devices from an actual successful generation and measured memory/latency, rather than processor names alone.
 
@@ -78,7 +78,7 @@ Disable automatic top-ups. Start with 100 credits; purchase another 100 only if 
 
 There is no fixed payment for an image generation. Google defines ad RPM as publisher earnings per 1,000 ad impressions. Use the publisher's observed revenue figure; do not subtract the network share again from an RPM that already represents publisher earnings. Geography, demand, format, consent, blockers, viewability and fill affect the actual result. [Ad RPM definition](https://support.google.com/adsense/answer/112032?hl=en-AO).
 
-The following numbers are sensitivity scenarios, not forecasts for WearView or India:
+The following numbers are sensitivity scenarios, not forecasts for yourFittingRoom or India:
 
 | Publisher ad RPM | Revenue from one monetized ad | Ads needed to cover $0.06 | Ads needed to cover $0.075 |
 | --- | --- | --- | --- |
@@ -167,7 +167,7 @@ Cloudflare Workers Paid starts at $5/month and supports Next.js via OpenNext. Th
 
 Supabase Free can be a small beta auth/metadata database; it has no included automatic backups or uptime SLA and can pause after inactivity. Do not mistake it for an operationally managed production database. R2 has a standard-storage free allowance that may cover short-lived beta images, but use private access and account for operations/retention/limits. [Supabase pricing](https://supabase.com/pricing), [R2 pricing](https://developers.cloudflare.com/r2/pricing/). Vercel Hobby is restricted to personal non-commercial use, so do not assume it is suitable for an ad-funded launch. [Vercel Hobby](https://vercel.com/docs/plans/hobby).
 
-Later, benchmark the existing open model on a scale-to-zero GPU against the hosted API on identical evaluation cases. Compare total billed time, cold starts, idle intervals, storage and engineering effort—not just inference seconds. Runpod bills startup, execution and idle time; flex workers can scale to zero. [Serverless billing](https://docs.runpod.io/serverless/pricing). Example only: at the listed 4090 rate of $1.10/hour, 30 billed seconds would cost about $0.0092 in compute, while 120 seconds would cost about $0.0367, before storage/other costs. [GPU rates](https://www.runpod.io/product/serverless). Neither duration is a measured WearView GPU result. Do not extrapolate the Mac timing to a rented GPU or promise this lower cost without a benchmark.
+Later, benchmark the existing open model on a scale-to-zero GPU against the hosted API on identical evaluation cases. Compare total billed time, cold starts, idle intervals, storage and engineering effort—not just inference seconds. Runpod bills startup, execution and idle time; flex workers can scale to zero. [Serverless billing](https://docs.runpod.io/serverless/pricing). Example only: at the listed 4090 rate of $1.10/hour, 30 billed seconds would cost about $0.0092 in compute, while 120 seconds would cost about $0.0367, before storage/other costs. [GPU rates](https://www.runpod.io/product/serverless). Neither duration is a measured yourFittingRoom GPU result. Do not extrapolate the Mac timing to a rented GPU or promise this lower cost without a benchmark.
 
 Cache unchanged outfit results only within the same user's retention scope; re-viewing, downloading, favouriting and comparing an existing output should not regenerate it. Hash identity must include that user's input images, confirmed category, model version and generation settings. Never share personalized results across users. If cost recovery becomes necessary, a small retailer-funded pilot or disclosed affiliate arrangement can be evaluated; neither revenue source is guaranteed or currently connected.
 
@@ -178,3 +178,15 @@ Prepared an owner-private desktop beta on the provided hosting subdomain, with n
 Current launch remains a controlled beta requiring companion installation. The hosted beta uses clothing-image upload; URL import is disabled there. A private audience gate can require sign-in before entry, even though app generation is the authentication trigger in the eventual publicly browsable experience. Keep the audience private until clean installation, managed authentication and browser local-network support are verified with friends. Do not claim completely secure systems or browser-only generation. See SECURITY.md for implemented protections and remaining public-release gates.
 
 Owner-private deployment is live at https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site. No external testers have been granted access. The published boundary checks passed; browser profile-sharing consent is pending. Invite friends only after the clean-install/browser compatibility gates.
+
+## Account usage and mutual isolation requirement — 13 October 2026
+
+Try-on must not consume the owner's ChatGPT allowance or OpenAI API credits. The current app uses identity-only managed ChatGPT sign-in and local FASHN inference; it has no OpenAI inference API integration or shared owner AI credential. Authentication/session/pairing tokens are access credentials, not paid AI-generation credits. Any future paid API integration needs separate explicit approval and a spending cap.
+
+Visitors authenticate with their own accounts. Owner deployment/service credentials and the site signing private key must stay out of browser bundles and companion downloads. The hosted site must not forward photo jobs to the owner's computer. A visitor's 127.0.0.1 refers to that visitor's computer, not the developer's.
+
+The companion API may process only explicitly selected images and manage the originating session's jobs. It must not expose file browsing, arbitrary paths/URLs, shell execution, remote desktop, LAN access or a remote-administration tunnel. Current hosted photo routes are disabled; pairing credentials remain in tab memory, and there is no owner-facing user-photo viewer.
+
+This is application-level isolation, not an operating-system sandbox. The installed Python companion runs with the user's OS permissions, and website code necessarily sees the selected images in that user's browser. Before public release, provide a reviewed, signed, sandboxed companion with least-privilege filesystem/network access and a secure update process. Do not promise that installing native code gives it zero device access or that an owner-controlled website can never be modified to collect data.
+
+Official distinction: identity scopes and ChatGPT plan usage are separate permissions: https://developers.openai.com/siwc/quickstart

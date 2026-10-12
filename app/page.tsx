@@ -1,2 +1,2 @@
-import WearView from '@/components/WearView';
-export default function Page(){return <WearView/>}
+import YourFittingRoom from '@/components/YourFittingRoom';
+export default function Page(){return <YourFittingRoom/>}

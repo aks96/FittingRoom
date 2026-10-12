@@ -19,7 +19,7 @@ export async function fetchPublic(value:string,maxBytes=4*1024*1024,redirects=0)
  if(!addresses.length||addresses.some(a=>!publicAddress(a.address)))throw new ImportFailure('This URL does not resolve to a public address.',400);
  const address=addresses.find(a=>a.family===4)||addresses[0];
  return new Promise((resolve,reject)=>{
- const request=https.get(url,{family:address.family,headers:{'User-Agent':'WearView/0.2 (product image preview)','Accept':'text/html,application/xhtml+xml,image/jpeg,image/png,image/webp'},lookup:(_host,_options,cb)=>cb(null,address.address,address.family)},response=>{
+ const request=https.get(url,{family:address.family,headers:{'User-Agent':'yourFittingRoom/0.2 (product image preview)','Accept':'text/html,application/xhtml+xml,image/jpeg,image/png,image/webp'},lookup:(_host,_options,cb)=>cb(null,address.address,address.family)},response=>{
  const code=response.statusCode||500;
  if(code>=300&&code<400&&response.headers.location){response.resume();if(redirects>=4){reject(new ImportFailure('Too many redirects. Upload the clothing image instead.'));return}let dest:string;try{dest=new URL(response.headers.location,url).href}catch{reject(new ImportFailure('Invalid retailer redirect.'));return}fetchPublic(dest,maxBytes,redirects+1).then(resolve,reject);return}
  if(code===401||code===403||code===429){response.resume();reject(new ImportFailure('The retailer restricts access or requires verification. Upload a product image or screenshot instead.'));return}

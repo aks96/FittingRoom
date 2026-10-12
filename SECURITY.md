@@ -1,4 +1,4 @@
-# WearView private desktop beta: security boundary
+# yourFittingRoom private desktop beta: security boundary
 
 This is a restricted beta, not a claim that the system is completely secure or certified for public production use.
 
@@ -33,3 +33,15 @@ JavaScript dependency audit reported zero known vulnerabilities on 12 October 20
 Before opening public access: validate a clean companion installation on a second computer, verify browser local-network permissions without disabling browser security, verify managed sign-in/sign-out with invited testers, review model/software license obligations, complete a dependency/security review, document vulnerability reporting and incident response, and set an update/key-rotation process. Apple M5/16 GB is tested; other GPUs are not certified. Mobile generation and browser-only model execution are not implemented.
 
 No security-sensitive user database exists. If server AI, persistent photos, real accounts or ads are introduced later, require a new threat model covering consent, retention, access control, abuse controls, billing limits, deletion and third-party data flows.
+
+## Account usage and mutual isolation requirement — 13 October 2026
+
+Try-on must not consume the owner's ChatGPT allowance or OpenAI API credits. The current app uses identity-only managed ChatGPT sign-in and local FASHN inference; it has no OpenAI inference API integration or shared owner AI credential. Authentication/session/pairing tokens are access credentials, not paid AI-generation credits. Any future paid API integration needs separate explicit approval and a spending cap.
+
+Visitors authenticate with their own accounts. Owner deployment/service credentials and the site signing private key must stay out of browser bundles and companion downloads. The hosted site must not forward photo jobs to the owner's computer. A visitor's 127.0.0.1 refers to that visitor's computer, not the developer's.
+
+The companion API may process only explicitly selected images and manage the originating session's jobs. It must not expose file browsing, arbitrary paths/URLs, shell execution, remote desktop, LAN access or a remote-administration tunnel. Current hosted photo routes are disabled; pairing credentials remain in tab memory, and there is no owner-facing user-photo viewer.
+
+This is application-level isolation, not an operating-system sandbox. The installed Python companion runs with the user's OS permissions, and website code necessarily sees the selected images in that user's browser. Before public release, provide a reviewed, signed, sandboxed companion with least-privilege filesystem/network access and a secure update process. Do not promise that installing native code gives it zero device access or that an owner-controlled website can never be modified to collect data.
+
+Official distinction: identity scopes and ChatGPT plan usage are separate permissions: https://developers.openai.com/siwc/quickstart

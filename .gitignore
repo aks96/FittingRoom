@@ -13,7 +13,7 @@ out/
 .site-build/
 screenshots/
 *.tar.gz
-!public/wearview-companion.tar.gz
+!public/yourFittingRoom-companion.tar.gz
 
 .DS_Store
 __pycache__/

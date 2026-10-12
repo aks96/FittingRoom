@@ -1,6 +1,6 @@
-# WearView — offline AI fitting room
+# yourFittingRoom — offline AI fitting room
 
-WearView uses the actual uploaded person and garment images. It now runs real local virtual try-on with [FASHN VTON 1.5](https://github.com/fashn-AI/fashn-vton-1.5), rather than a sample result, mannequin or manual collage. Women's tops, shirts and dresses and men's T-shirts are the current product scope.
+yourFittingRoom uses the actual uploaded person and garment images. It now runs real local virtual try-on with [FASHN VTON 1.5](https://github.com/fashn-AI/fashn-vton-1.5), rather than a sample result, mannequin or manual collage. Women's tops, shirts and dresses and men's T-shirts are the current product scope.
 
 ## Run on this computer
 
@@ -35,7 +35,7 @@ Use Python 3.12 and Node.js 22+. Install the web dependencies with `npm ci`. The
 ```sh
 ./scripts/setup-ai.sh
 # Or select a Python 3.12 executable:
-WEARVIEW_PYTHON=/path/to/python3.12 ./scripts/setup-ai.sh
+YOURFITTINGROOM_PYTHON=/path/to/python3.12 ./scripts/setup-ai.sh
 ```
 
 Setup downloads several GB into `.runtime/` and installs an isolated Python environment. It contacts official GitHub/Hugging Face sources and the Python package registry for inbound downloads; it sends no personal images. The script is syntax checked, but a clean installation on another computer has not been tested. The running installation was assembled and verified with the same packages/models. The source download follows upstream main; pin its revision before distributing a release.

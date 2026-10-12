@@ -44,8 +44,8 @@ torch.set_num_threads(4)
 
 from local_ai.security import guard, pair, PAIR_CODE
 app.middleware('http')(guard)
-print('WearView local pairing code: '+PAIR_CODE,flush=True)
-print('Keep this code private. Pair only with the WearView website or localhost.',flush=True)
+print('yourFittingRoom local pairing code: '+PAIR_CODE,flush=True)
+print('Keep this code private. Pair only with the yourFittingRoom website or localhost.',flush=True)
 @app.post('/pair')
 def pair_browser():
     result=pair()

@@ -7,7 +7,7 @@ const root=process.cwd(),stage=path.join(root,'.site-build');
 await fs.rm(stage,{recursive:true,force:true});await fs.mkdir(stage,{recursive:true});
 for(const item of ['app','components','lib','public','tsconfig.json','postcss.config.mjs'])await fs.cp(path.join(root,item),path.join(stage,item),{recursive:true});
 await fs.rm(path.join(stage,'app/api'),{recursive:true,force:true});
-await fs.writeFile(path.join(stage,'package.json'),JSON.stringify({name:'wearview-site-ui',type:'module',private:true}));
+await fs.writeFile(path.join(stage,'package.json'),JSON.stringify({name:'yourfittingroom-site-ui',type:'module',private:true}));
 await fs.writeFile(path.join(stage,'next.config.ts'),"export default {output:'export',devIndicators:false};\n");
 const result=spawnSync(process.execPath,[path.join(root,'node_modules/next/dist/bin/next'),'build',stage],{stdio:'inherit',env:{...process.env,NEXT_TELEMETRY_DISABLED:'1'}});if(result.status!==0)process.exit(result.status||1);
 const assets={},hashes=new Set();

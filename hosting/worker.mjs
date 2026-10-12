@@ -33,7 +33,7 @@ export default {async fetch(request,env){
  if(path==='/api/import')return json({error:'Link import is unavailable in this private beta. Upload the clothing image instead.'},503);
  if(path.startsWith('/api/'))return json({error:'Not found.'},404);
  if(!['GET','HEAD'].includes(request.method))return json({error:'Method not allowed.'},405);
- if(path==='/auth/finish')return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><title>WearView sign-in</title><p>Sign-in finished. Return to WearView and select Try it on.</p><script src="/auth/finish.js"></script></html>',{headers:{...headers,'Content-Type':'text/html;charset=utf-8'}});
+ if(path==='/auth/finish')return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><title>yourFittingRoom sign-in</title><p>Sign-in finished. Return to yourFittingRoom and select Try it on.</p><script src="/auth/finish.js"></script></html>',{headers:{...headers,'Content-Type':'text/html;charset=utf-8'}});
  if(path==='/auth/finish.js')return new Response("if(window.opener){window.opener.postMessage('wearview-auth-finished',location.origin);window.close()}",{headers:{...headers,'Content-Type':'text/javascript;charset=utf-8'}});
  const asset=assets[path==='/'?'/index.html':path]||assets[path+'.html'];
  if(!asset)return new Response('Not found',{status:404,headers});

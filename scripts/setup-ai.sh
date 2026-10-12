@@ -2,7 +2,7 @@
 # One-time inbound downloads. Runtime inference is offline (see ai.sh).
 set -eu
 cd "$(dirname "$0")/.."
-python_bin="${WEARVIEW_PYTHON:-python3.12}"
+python_bin="${YOURFITTINGROOM_PYTHON:-${WEARVIEW_PYTHON:-python3.12}}"
 mkdir -p .runtime/weights/dwpose .runtime/hf-cache .runtime/mpl-cache
 if [ ! -x .runtime/ai-venv/bin/python ]; then
   "$python_bin" -m venv .runtime/ai-venv

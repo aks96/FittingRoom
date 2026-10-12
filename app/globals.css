@@ -22,3 +22,5 @@
 .beta-setup {padding:16px 20px;margin-bottom:32px;border:1px solid #ddd4d9;border-radius:12px;background:#f1ebef}
 .beta-setup summary {cursor:pointer;font-weight:600;color:#614554}
 .beta-setup[open] .engine-status {margin-top:20px}
+/* Keep the full brand readable alongside navigation on narrow screens. */
+@media(max-width:600px){.site-header .brand{font-size:22px}.site-header nav .btn:nth-child(2)>span:not(.count){display:none}}
