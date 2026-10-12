@@ -42,3 +42,5 @@ Still-photo inference is not live-video or instant try-on. Exact physical fit, c
 - npm audit reports zero vulnerabilities. Python audit reports no known vulnerabilities after upgrading cryptography and pip; the source-installed FASHN package is not scanned by that tool.
 - Updated home/setup layout checked at 390, 820 and 1440 px: no horizontal overflow. Mobile generation remains unsupported.
 - Clean companion installation on another computer and invited-user browser authentication/local-network permission remain release gates.
+
+The private deployment succeeded and was opened in Chrome. Live checks returned: static home 200 with hashed-script CSP; visitor session 200 with authenticated=false when service access attempted forged identity headers; generation permission 401 without visitor identity; photo proxy 410. This verifies the hosting dispatcher strips forged identity headers and that service access cannot stand in for visitor authentication. Browser login reached the profile-sharing consent screen and is left for the owner to complete. Actual signed-in browser generation and browser-to-loopback network permission remain unverified on the hosted site.

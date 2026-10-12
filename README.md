@@ -77,3 +77,6 @@ Run `./scripts/ai.sh`, keep its private pairing code, then `./scripts/dev.sh`. I
 Verification: `npm test`; `npm run typecheck`; `npm run build:site`; `node --test tests/hosting.test.mjs`; `.runtime/ai-venv/bin/python -m unittest tests/security_test.py`; and, with the companion running, `.runtime/ai-venv/bin/python tests/local_ai_smoke.py` (enter its pairing code when prompted).
 
 The private deployment requires invited access. It is not an unrestricted public launch. Do not deploy hosting/worker.mjs outside the trusted Sites dispatcher.
+
+Owner-private preview: https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site
+The hosting platform requires sign-in before entry for this restricted beta. No friends have been invited yet.
