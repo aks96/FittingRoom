@@ -1,82 +1,70 @@
-# yourFittingRoom — offline AI fitting room
+# yourFittingRoom — local AI fitting room
 
-yourFittingRoom uses the actual uploaded person and garment images. It now runs real local virtual try-on with [FASHN VTON 1.5](https://github.com/fashn-AI/fashn-vton-1.5), rather than a sample result, mannequin or manual collage. Women's tops, shirts and dresses and men's T-shirts are the current product scope.
+Real uploaded person and garment images are used by local FASHN VTON 1.5 inference. The local project now routes tops, shirts, T-shirts, sweaters, hoodies and jackets to `tops`; pants, jeans, shorts and skirts to `bottoms`; dresses and jumpsuits to `one-pieces`. New categories are experimental and need real-image quality validation. One garment at a time; shoes, accessories and layered multi-item outfits are unsupported. Existing download archives have not been regenerated and still contain the earlier scope. There is no cloud AI API, default-image substitution or physical-size prediction. This is a local development build; public release is not ready or authorized.
+
+Garment detection provides editable category, colour, pattern, sleeve, clothing-range and fabric-appearance suggestions. Ambiguous range/material cues remain uncertain. Exact fibre composition must come from a label/retailer; fabric notes do not condition the image model. The wearer profile is explicitly selected, never inferred from a person photo. Confirmed women’s/men’s clothing must match that profile; unisex clothing permits either. Both client and broker block missing declarations and mismatches before generation. This checks declarations, not the person’s actual gender or identity.
+
+Native preview settings offer Balanced (30 model steps, default) and Fast (20 steps). More steps take longer and do not guarantee photorealistic texture. Crops preserve up to 1600 pixels on the longest edge rather than always exporting at 600 pixels wide. The model still uses its native 576 × 864 canvas; no texture-restoring filter or new model was added. `tests/local_quality_smoke.py` tests a real preview and cleanup on public upstream fixtures only, with a pairing code read hidden from stdin.
+
+When explicitly ready to refresh the Mac development download, build the local UI with `node scripts/build-local-workspace.mjs`, then run `npm run companion:package -- mac` using the project Node runtime. This updates that archive and its file size/hash/count metadata; rebuild the website afterward to reflect the new metadata. No packaging command was run for the current category or Windows worker changes. The project now includes an opt-in Windows AppContainer/Job Object worker candidate with NVIDIA CUDA, AMD ROCm, Intel XPU and explicit CPU profiles, separate backend environments, adapter diagnostics and `Test Windows.cmd`. Real Windows execution is still unverified; GPU-specific hardware/driver and OS limits apply. See [Windows testing](WINDOWS_TESTING.md). Existing website archives retain their earlier disabled Windows worker.
 
 ## Run on this computer
 
-The model, Python environment and Node runtime are already installed in this project. Use two terminals from the project folder:
+The runtime/models are already installed here. From this project folder:
 
 ```sh
-# Terminal 1: offline AI processor
 ./scripts/ai.sh
 ```
 
-```sh
-# Terminal 2: web app
-./scripts/dev.sh
-```
+Keep that terminal open, then visit **http://127.0.0.1:8765**. This serves the fixed local photo workspace directly from the companion; a separate web server is unnecessary. Enter the private pairing code printed by the companion and give selected-image processing consent. Refresh clears temporary photos/looks and requires pairing again. Models are reused.
 
-Open http://127.0.0.1:3000. If either server is already running, stop the old process with Ctrl+C before restarting. **Check local engine** in the fitting room updates availability. No API key or paid service is required. Refresh ends the guest session.
+The website preview at http://127.0.0.1:3000 now shows the download-first landing page, separate Mac/Windows choices, exact existing archive names/sizes/contents/checksums and setup steps. First-time download, extraction, setup, start, pairing/consent and photo-generation instructions are on this main page, alongside returning-user steps and launcher/opening help. Its Open your local fitting room button opens the installed companion on the same computer in a new tab; the website cannot install/start it or approve OS prompts. Windows instructions explicitly stop at interface/download testing. It does not select personal photos. Use `./scripts/dev.sh` for development. The full developer photo/import flow remains at `/development/fitting-room`, restricted to the local Host and excluded from website exports. The fixed workspace at port 8765 uses clothing-image uploads and optional original product links.
 
 ## Try it
 
-1. Select **Upload your clothing image**. Choose a JPG, PNG or WebP, up to 10 MB. The selected file is decoded and displayed; it is never replaced with a sample garment.
-2. Local recognition suggests colour, category, pattern, sleeve length and model-photo versus flat-lay input. Review/correct suggestions and confirm the actual garment. Size and physical fit remain unknown.
-3. Upload a person photo. Use one front-facing person with a visible face and torso, even lighting and arms away from the body. Show the full body for dresses. Crop, rotate, replace and remove controls edit the actual image locally.
-4. Select **Try it on**. Real local job stages are polled while the model aligns inputs and generates the clothing on that person. Leaving the job screen keeps it running; cancellation is checked at the next model step.
-5. Toggle original/AI preview, zoom, favourite, save, generate another outfit and compare. Downloads include a visible AI-generated/physical-fit-not-verified label.
+1. Pair with consent, select a JPG/PNG/WebP garment image and review actual detected colour, category, pattern, sleeves and photograph type.
+2. Confirm/correct the details, then upload one clear front-facing person photo. Crop, rotate, replace and remove edit the actual selected image locally.
+3. Generate a local AI preview. Stages are real worker states; cancellation terminates its process. No percentages or completion guarantees are shown.
+4. Toggle original/preview, zoom, favourite, save, compare and open the garment's attached original product details. Exports visibly label the result as an AI preview with physical fit unverified.
+5. Disconnect withdraws engine consent and stops/purges that session. Clear temporary session data also removes browser images and saved previews. Downloaded files/models remain separate.
 
-Product import extracts JSON-LD and Open Graph images from public HTTPS product pages or direct image links. Retailers can block requests or require JavaScript. Import errors offer clothing-image upload. Retailer images and metadata require review. Optional original links stay attached to each outfit. Plum and Sage are explicitly labelled fictional sample garments with separate links, available only through explicit sample actions. A person photo is always selected by the user. On macOS, if the native picker greys out a WebP, choose Show Options → Format → All Files, or drag the image onto the upload area; app decoding and file validation still apply.
+AI can change faces, hands, logos, patterns and proportions. A single photo cannot establish clothing size, measurements or precise physical fit. No official retailer partnership is claimed. This is a still-photo preview, not real-time camera/video.
 
-## Install on another machine
+## Current security work
 
-Use Python 3.12 and Node.js 22+. Install the web dependencies with `npm ci`. Then:
+Inference now runs in a supervised Mac App Sandbox worker. Actual tests deny unrelated file reads/writes, Internet connections and shell spawning. The local workspace blocks remote scripts/connections. Server revocation, ownership, cleanup retries, image limits, cancellation, runtime and resident-memory limits are implemented. Unsupported platforms/worker/GPU profiles fail closed. The new Windows source worker requires explicit experimental startup and successful per-launch isolation/compute probes; it remains unvalidated on actual Windows hardware and absent from the existing download.
 
-```sh
-./scripts/setup-ai.sh
-# Or select a Python 3.12 executable:
-YOURFITTINGROOM_PYTHON=/path/to/python3.12 ./scripts/setup-ai.sh
-```
+The broker remains outside the OS sandbox and the worker uses development-only absolute-path exceptions. It is ad-hoc signed, not Developer ID signed/notarized. An internal embedded-runtime bundle exists at `.runtime/fixed-mac-bundle/yourFittingRoom-local`; its model link is specific to this machine. It is not a portable installer or a download for ordinary users.
 
-Setup downloads several GB into `.runtime/` and installs an isolated Python environment. It contacts official GitHub/Hugging Face sources and the Python package registry for inbound downloads; it sends no personal images. The script is syntax checked, but a clean installation on another computer has not been tested. The running installation was assembled and verified with the same packages/models. The source download follows upstream main; pin its revision before distributing a release.
+See [SECURITY.md](SECURITY.md), [SECURITY_RELEASE_PLAN.md](SECURITY_RELEASE_PLAN.md) and [VERIFICATION.md](VERIFICATION.md). Legitimate signing, portable installers/model storage, Windows isolation, clean-machine tests, independent review and signed updates remain release gates. Nothing was publicly deployed in this iteration.
 
-The Mac adapter uses Metal float16 diffusion, float32 rotary embeddings, meta-device weight loading and CPU pose/parser inference. CUDA and CPU paths are available but untested on other hardware. On this Apple M5 MacBook Air with 16 GB memory, one 20-step test took approximately 103 seconds. Cold loading adds time; timings vary. This is a still-photo preview, not live camera/video or instant fitting.
-
-## Accuracy and privacy
-
-- Real recognition and generation are connected. Suggestions can be uncertain. Lighting can distort colour; segmentation can include background; generated faces, hands, logos, prints or proportions can change. Compare the original carefully.
-- Photos do not establish garment dimensions, brand sizing, stretch or physical fit. Accurate size recommendations need verified garment measurements, size charts, body measurements and fit validation. The app does not claim these capabilities.
-- Runtime enables `HF_HUB_OFFLINE` and `TRANSFORMERS_OFFLINE` and disables Hugging Face telemetry. Analysis and generation use downloaded weights. The Next.js proxy has a fixed destination of `127.0.0.1:8765`; both servers bind to loopback. There is no cloud AI fallback.
-- Input/output photos remain in browser/local-process memory. The AI service writes no photo files. The OS may manage memory through swap. Explicit downloads and developer QA artifacts are device files and need separate deletion.
-- After collecting a completed result, the browser asks the server to purge it. Uncollected results expire after 30 minutes (checked every minute). Cancellation takes effect at the next model step. Stopping the AI server clears its process memory. Refresh requests cancellation, but closing/crashing cannot guarantee delivery.
-- Saved previews contain input copies. Removing the current person photo alone keeps previews and active-job copies. Delete previews and cancel jobs, or use delete-all. No localStorage, database, real account, paid connection or public deployment is used.
-
-## Architecture and checks
-
-`lib/services.ts` exposes replaceable product-import, in-memory storage, analysis and generation interfaces. `lib/server/product-import.ts` bounds responses and protects public requests against private addresses and unsafe redirects. `lib/server/local-ai.ts` provides a bounded same-origin proxy to the fixed offline service. `local_ai/server.py` owns classification, segmentation, generation and cancellable in-memory jobs. `.runtime/` is ignored; model weights stay outside application assets.
+## Developer builds and checks
 
 ```sh
 export PATH="$PWD/.runtime/bin:$PATH"
 npm test
 npm run typecheck
 npm run build
+node scripts/build-local-workspace.mjs
+.runtime/ai-venv/bin/python scripts/build-fixed-mac-bundle.py
 ```
 
-See [VERIFICATION.md](VERIFICATION.md) for observed results and coverage limits. Original references remain in `references/`.
+`build-local-workspace.mjs` exports the fixed React UI separately without touching hosting output. Restart the companion after rebuilding its local UI. `package-companion.mjs` packages explicitly allowlisted development source and verified UI assets; these archives still require source setup and are not final signed installers.
 
-## Proposed next phase
+Python fault/authorization tests run without AI:
 
-Keep local processing as the default. Add pose/occlusion guidance, validate diverse people and garments, and profile Metal inference before optimizing latency. Add optional body measurements and verified brand size charts as a separate fit feature with explicit uncertainty. Improve public product import without bypassing retailer restrictions. Real accounts and opt-in encrypted storage need retention/deletion policies; cloud photo processing needs a new explicit choice. Before release, pin model/source revisions, review component licences and build repeatable quality/privacy evaluations.
+```sh
+.runtime/ai-venv/bin/python -m unittest discover -s tests -p '*_test.py'
+```
 
-## Private hosted beta
+Real sandbox tests: `.runtime/ai-venv/bin/python scripts/test-worker-isolation.py`. The running-engine smoke test uses only public fixtures and asks for the local pairing code: `.runtime/ai-venv/bin/python tests/local_ai_smoke.py`.
 
-The deployable UI keeps Next.js as its source stack. `npm run build:site` exports the UI into a narrow Sites worker. Hosted photo endpoints are disabled: the browser talks directly to the visitor's local companion after pairing. Hosted generation uses managed Sites sign-in and a signed permission; local development uses explicit device pairing. See [SECURITY.md](SECURITY.md) for the trust boundary and release gates.
+`lib/services.ts` provides replaceable import/storage/analysis/generation interfaces. `local_ai/server.py` is the loopback broker; `supervisor.py` manages isolated workers; `worker.py`/`inference.py` execute offline models; `sessions.py` owns revocation/expiry. Dependencies, weights and private sessions are excluded from source downloads. Original references remain in `references/`; the slow browser AI experiment remains in `scripts/browser/README.md` for development only.
 
-Run `./scripts/ai.sh`, keep its private pairing code, then `./scripts/dev.sh`. In the website open Desktop beta setup, consent to local processing, and pair with that code. Refreshing ends the temporary photo session and requires pairing again. `node scripts/package-companion.mjs` creates a source-only setup archive for testers; it contains no weights, photos, credentials or virtual environment.
+Hosting permission is withdrawn. The former preview is offline. Do not run hosting builds/deployments, buy a domain or invite testers without new explicit user authorization.
 
-Verification: `npm test`; `npm run typecheck`; `npm run build:site`; `node --test tests/hosting.test.mjs`; `.runtime/ai-venv/bin/python -m unittest tests/security_test.py`; and, with the companion running, `.runtime/ai-venv/bin/python tests/local_ai_smoke.py` (enter its pairing code when prompted).
+## Website/download UI update — 14 October 2026
 
-The private deployment requires invited access. It is not an unrestricted public launch. Do not deploy hosting/worker.mjs outside the trusted Sites dispatcher.
+This iteration changes the website UI only. Existing Mac TAR.GZ and Windows ZIP downloads are linked; no companion archive was created or regenerated. Windows targets recent x64 devices with 16 GB RAM for website/download testing, with AI generation still disabled until Windows OS isolation and hardware validation. The downloads are development source files, not signed installers. The currently running companion keeps its prior verified workspace; the new native export was compile-checked and retained separately in `.runtime/local-workspace-next`. Hosting output was not built or deployed.
 
-Owner-private preview: https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site
-The hosting platform requires sign-in before entry for this restricted beta. No friends have been invited yet.
+For a Windows developer testing the website locally, use Node.js 22+, `npm ci`, then `npm run dev` from this project and visit http://127.0.0.1:3000 in Chrome or Edge. This tests the website/download UI; it does not enable the Windows AI worker.
