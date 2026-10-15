@@ -46,21 +46,21 @@ assert code==200 and analysis['category']=='T-shirt' and analysis['colour']=='Bl
 assert analysis['size']=='Not determined from the image',analysis
 print('Real local garment recognition and invalid/origin checks passed.',flush=True)
 person='data:image/webp;base64,'+base64.b64encode((ROOT/'.runtime/fashn-src/examples/data/model.webp').read_bytes()).decode()
-payload={'person':person,'garment':garment,'category':'Shirt','audience':'Men','photoType':'model','steps':20}
+payload={'person':person,'garment':garment,'category':'Shirt','audience':'Women','wearerProfile':'Men','photoType':'model','steps':20}
 code,_=request('/tryon',payload)
 assert code==400,code
-payload['category']='T-shirt'
+payload['category']='T-shirt';payload['audience']='Unisex'
 code,job=request('/tryon',payload)
 assert code==200,job
 code,second=request('/pair',{},token=PAIR_CODE)
 assert code==200,second
 assert request('/jobs/'+job['id'],token=second['token'])[0]==404
 assert request('/jobs/'+job['id'],{},token=second['token'])[0]==404
-assert request('/tryon',payload,origin='https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site')[0]==401
+assert request('/tryon',payload,origin='https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site')[0]==403
 code,_=request('/jobs/'+job['id'],{})
 assert code==200,code
 wait_deleted(job['id'])
-print('Scope enforcement, cross-session isolation, hosted permission rejection and cancellation/purge passed.',flush=True)
+print('Scope enforcement, cross-session isolation, former hosted origin rejection and cancellation/purge passed.',flush=True)
 blank=io.BytesIO();Image.new('RGB',(432,864),'white').save(blank,format='PNG')
 payload['person']='data:image/png;base64,'+base64.b64encode(blank.getvalue()).decode()
 code,job=request('/tryon',payload)
@@ -73,3 +73,20 @@ try:
     assert status['stage']=='failed' and 'person could not be detected' in status['error'],status
 finally:request('/jobs/'+job['id'],{})
 print('Non-person photo rejection passed. No test preview was substituted.',flush=True)
+payload['person']=person
+code,active_job=request('/tryon',payload)
+assert code==200,active_job
+for _ in range(120):
+    _,active_status=request('/jobs/'+active_job['id'])
+    if active_status.get('stage')=='generating':break
+    if active_status.get('stage')=='failed':raise AssertionError(active_status)
+    time.sleep(.5)
+assert active_status.get('stage')=='generating',active_status
+code,result=request('/session/revoke',{})
+assert result.get('cancelled')==1 and result.get('purged')==1,result
+assert code==200 and result['revoked'],result
+assert request('/analyze',{'image':garment})[0]==401
+assert request('/session/revoke',{})[0]==200
+assert request('/health',token=second['token'])[1]['paired']
+assert request('/session/revoke',{},token=second['token'])[1]['revoked']
+print('Actual engine revocation, replay rejection, idempotent cleanup and other-session isolation passed.',flush=True)

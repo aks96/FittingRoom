@@ -7,12 +7,21 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/services.test.ts",
-    "build:site": "node scripts/build-site.mjs"
+    "test": "node --experimental-strip-types --test tests/services.test.ts tests/browser-contracts.test.ts tests/engine.test.ts tests/companion-downloads.test.ts",
+    "build:site": "node scripts/build-site.mjs",
+    "build:netlify": "node scripts/build-netlify.mjs",
+    "check:netlify": "node --test tests/netlify-export.test.mjs",
+    "preview:netlify": "node scripts/preview-netlify.mjs",
+    "build:companion-ui": "node scripts/build-local-workspace.mjs",
+    "browser:runtime": "node scripts/browser/copy-runtime.mjs",
+    "predev": "node scripts/browser/copy-runtime.mjs",
+    "prebuild": "node scripts/browser/copy-runtime.mjs",
+    "companion:package": "node scripts/package-companion.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
     "next": "^15.5.0",
+    "onnxruntime-web": "1.30.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -21,6 +30,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@webgpu/types": "0.1.74",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
   },

@@ -1,0 +1,6 @@
+# Respect the official AMD Torch wheel's setuptools<82 requirement.
+setuptools==80.9.0
+rocm==7.14.0
+rocm-bootstrap==0.1.0
+rocm-sdk-core==7.14.0
+rocm-sdk-libraries==7.14.0

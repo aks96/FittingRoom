@@ -1,0 +1,15 @@
+[
+ {"value":"Top","group":"Tops","native":"tops","maskIds":[3],"prompt":"a blouse or a sleeveless upper-body top"},
+ {"value":"Shirt","group":"Tops","native":"tops","maskIds":[3],"prompt":"a button-front collared shirt"},
+ {"value":"T-shirt","group":"Tops","native":"tops","maskIds":[3],"prompt":"a short-sleeved crew-neck t-shirt without buttons"},
+ {"value":"Sweater","group":"Tops","native":"tops","maskIds":[3],"prompt":"a knitted sweater or pullover"},
+ {"value":"Hoodie","group":"Tops","native":"tops","maskIds":[3],"prompt":"a hooded sweatshirt"},
+ {"value":"Jacket","group":"Tops","native":"tops","maskIds":[3],"prompt":"a short upper-body jacket"},
+ {"value":"Pants","group":"Lower-body","native":"bottoms","maskIds":[6],"prompt":"a pair of non-denim trousers or pants"},
+ {"value":"Jeans","group":"Lower-body","native":"bottoms","maskIds":[6],"prompt":"a pair of denim jeans"},
+ {"value":"Shorts","group":"Lower-body","native":"bottoms","maskIds":[6],"prompt":"a pair of shorts ending above the knees"},
+ {"value":"Skirt","group":"Lower-body","native":"bottoms","maskIds":[5],"prompt":"a skirt worn from the waist with no separate legs"},
+ {"value":"Dress","group":"One-piece","native":"one-pieces","maskIds":[4],"prompt":"a one-piece dress covering the torso and extending into a skirt"},
+ {"value":"Jumpsuit","group":"One-piece","native":"one-pieces","maskIds":[3,4,6],"prompt":"a one-piece jumpsuit or romper joining a top and trouser legs"},
+ {"value":"Unsupported","group":"Other","native":null,"maskIds":[],"prompt":"shoes, bags, accessories, underwear or several separate outfits rather than a single supported garment"}
+]

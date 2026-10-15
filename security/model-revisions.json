@@ -7,7 +7,8 @@
       "files": [
         {
           "name": "model.safetensors",
-          "sha256": "d6cd38286885bc29fa487ea9383f80ffeb95862e7747c630d42c5d3c05bdd35a"
+          "sha256": "d6cd38286885bc29fa487ea9383f80ffeb95862e7747c630d42c5d3c05bdd35a",
+          "bytes": 1943668048
         }
       ]
     },
@@ -17,11 +18,13 @@
       "files": [
         {
           "name": "dw-ll_ucoco_384.onnx",
-          "sha256": "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843"
+          "sha256": "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843",
+          "bytes": 134399116
         },
         {
           "name": "yolox_l.onnx",
-          "sha256": "7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411"
+          "sha256": "7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411",
+          "bytes": 216746733
         }
       ]
     },
@@ -31,9 +34,11 @@
       "files": [
         {
           "name": "model.safetensors",
-          "sha256": "e43c8c8a9b04f28798f0a4630cf18caa2cdb27a0d454fae43a5716e6f7078244"
+          "sha256": "e43c8c8a9b04f28798f0a4630cf18caa2cdb27a0d454fae43a5716e6f7078244",
+          "bytes": 256146352
         }
       ]
     }
-  ]
+  ],
+  "sourceArchiveSha256": "b5b490bdec6d404d8db397f7bb7639d5d4d78f68677e90f9e3bc495d892032f8"
 }

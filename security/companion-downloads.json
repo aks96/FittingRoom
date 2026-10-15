@@ -1,0 +1,29 @@
+{
+  "build": "Development preview",
+  "packages": {
+    "mac": {
+      "filename": "yourFittingRoom-companion.tar.gz",
+      "bytes": 10248688,
+      "sha256": "15a60a5cf11a3af72c140e4a7a1d21aa237d52f3653635a1d31d2282cbff8398",
+      "fileCount": 58,
+      "folder": "yourFittingRoom-companion",
+      "setup": "Set up.command",
+      "start": "Start AI.command",
+      "format": "TAR.GZ",
+      "generationAvailable": true
+    },
+    "windows": {
+      "filename": "yourFittingRoom-companion-windows.zip",
+      "bytes": 10233791,
+      "sha256": "d1860666b310b1d52b01bda6daacaadefa70018186ae4e4dfc064ee83d91af63",
+      "fileCount": 70,
+      "folder": "yourFittingRoom-companion",
+      "setup": "Set up.cmd",
+      "start": "Start AI.cmd",
+      "format": "ZIP",
+      "generationAvailable": false,
+      "experimentalWorker": true,
+      "test": "Test Windows.cmd"
+    }
+  }
+}

@@ -6,9 +6,10 @@ from starlette.responses import JSONResponse
 
 config=json.loads((Path(__file__).resolve().parents[1]/'security/issuer.json').read_text())
 SITE=config['origin']
-ORIGINS={SITE,'http://127.0.0.1:3000','http://localhost:3000'}
+# Hosting permission was withdrawn. Only the current local web app may pair.
+ORIGINS={'http://127.0.0.1:3000','http://localhost:3000','http://127.0.0.1:8765','http://localhost:8765'}
 PAIR_CODE=secrets.token_urlsafe(24)
-sessions={}
+from local_ai.sessions import sessions,lock as session_lock,active as session_active,revoke,expire,may_revoke
 pair_attempts=[]
 active=asyncio.Semaphore(2)
 def unbase(value):return base64.urlsafe_b64decode(value+'='*((-len(value))%4))
@@ -25,12 +26,12 @@ def permission(value,session):
 
 def pair():
     now=time.time()
-    for token,s in list(sessions.items()):
-        if s['expires']<now:sessions.pop(token,None)
-    if len(sessions)>=8:return None
-    token=secrets.token_urlsafe(32)
-    sessions[token]={'challenge':secrets.token_urlsafe(24),'expires':now+14400,'generations':[]}
-    return {'token':token,'challenge':sessions[token]['challenge'],'expiresAt':int((now+14400)*1000)}
+    expire()
+    with session_lock:
+        if len(sessions)>=8:return None
+        token=secrets.token_urlsafe(32)
+        sessions[token]={'challenge':secrets.token_urlsafe(24),'expires':now+14400,'generations':[]}
+        return {'token':token,'challenge':sessions[token]['challenge'],'expiresAt':int((now+14400)*1000)}
 
 async def guard(request,call_next):
     def fail(status,message):return JSONResponse({'detail':message},status_code=status)
@@ -38,6 +39,12 @@ async def guard(request,call_next):
     if request.headers.get('host') not in ('127.0.0.1:8765','localhost:8765'):return fail(403,'Invalid local host.')
     origin=request.headers.get('origin')
     if origin and origin not in ORIGINS:return fail(403,'This website is not allowed to use the local engine.')
+    # Same-origin browser GETs omit Origin. Accept only the browser's forbidden
+    # Sec-Fetch-Site header plus the exact checked loopback Host; auth still applies.
+    if not origin and request.method=='GET' and request.headers.get('sec-fetch-site')=='same-origin':
+        origin='http://'+request.headers['host']
+    from local_ai.workspace import bundle
+    if request.method in ('GET','HEAD') and bundle.has(request.url.path):return await call_next(request)
     cors={'Access-Control-Allow-Origin':origin,'Vary':'Origin'} if origin in ORIGINS else {}
     async def response(value):
         value.headers.update(cors);value.headers['Cache-Control']='no-store';value.headers['X-Content-Type-Options']='nosniff';return value
@@ -54,7 +61,12 @@ async def guard(request,call_next):
         if not secrets.compare_digest(bearer,PAIR_CODE):return await response(fail(401,'Incorrect pairing code. Check the local terminal.'))
     else:
         session=sessions.get(bearer)
-        if not session or session['expires']<time.time():return await response(fail(401,'Pair this browser with the local engine again.'))
+        if request.url.path=='/session/revoke' and request.method=='POST' and may_revoke(bearer):pass
+        elif not session_active(bearer):
+            if session:
+                try:revoke(bearer)
+                except Exception:return await response(fail(503,'Session authorization ended, but worker cleanup is not confirmed. Retry Disconnect or stop the companion.'))
+            return await response(fail(401,'Pair this browser with the local engine again.'))
         request.state.owner=bearer
         if request.url.path=='/tryon':
             if origin==SITE and not permission(request.headers.get('x-wearview-permit',''),session):return await response(fail(401,'Sign in again to authorize generation. No photo has been processed.'))

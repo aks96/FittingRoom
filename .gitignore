@@ -18,3 +18,7 @@ screenshots/
 .DS_Store
 __pycache__/
 *.pyc
+public/browser-runtime/
+netlify-dist/
+.netlify/
+.openai/

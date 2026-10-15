@@ -1,0 +1,10 @@
+# Configuration only. No site is created or deployed by these files/scripts.
+# Build the download website, never the development Next.js server or AI broker.
+[build]
+  command = "npm run build:netlify"
+  publish = "netlify-dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"

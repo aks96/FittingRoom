@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "profiles": {
+    "cuda": {"label": "NVIDIA CUDA", "torch": "2.13.0", "torchvision": "0.28.0", "index": "https://download.pytorch.org/whl/cu126"},
+    "xpu": {"label": "Intel XPU (supported Arc GPUs)", "torch": "2.13.0", "torchvision": "0.28.0", "index": "https://download.pytorch.org/whl/xpu"},
+    "rocm": {"label": "AMD ROCm (supported Radeon/Ryzen GPUs)", "torch": "2.12.0+rocm7.14.0", "torchvision": "0.27.0+rocm7.14.0", "index": "https://repo.amd.com/rocm/whl-multi-arch/"},
+    "cpu": {"label": "CPU (Intel or AMD; slow)", "torch": "2.13.0", "torchvision": "0.28.0", "index": "https://download.pytorch.org/whl/cpu"}
+  },
+  "amdTargets": ["all", "gfx1010", "gfx1011", "gfx1012", "gfx1030", "gfx1031", "gfx1032", "gfx1033", "gfx1034", "gfx1035", "gfx1036", "gfx1100", "gfx1101", "gfx1102", "gfx1103", "gfx1150", "gfx1151", "gfx1152", "gfx1153", "gfx1200", "gfx1201", "gfx908", "gfx90a"],
+  "rocmRuntimeBootstrap": {
+    "url": "https://repo.amd.com/rocm/whl-multi-arch/rocm_bootstrap-0.1.0-py3-none-any.whl",
+    "sha256": "33e3d4dad086b1f0e06bc049a618ca874d4fb72f758fff00676e23d2a644b652"
+  },
+  "rocmBootstrap": {
+    "url": "https://repo.amd.com/rocm/whl-multi-arch/rocm-7.14.0.tar.gz",
+    "sha256": "77c622d8eef7bf7fa1af70d410a05a621abbd2baaf53e52ab268dc6d140e15b2",
+    "bytes": 24252
+  }
+}

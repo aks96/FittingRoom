@@ -1,10 +1,38 @@
+> Local development update (15 October 2026): Both development downloads are refreshed. The Windows ZIP includes NVIDIA CUDA, AMD ROCm, Intel XPU and explicit CPU test profiles, an AppContainer worker candidate and Test Windows.cmd. Hardware/OS/driver limits apply, and none has been validated on real Windows here. A static Netlify website export and manual handoff are prepared locally; nothing was deployed or pushed in this implementation. See [NETLIFY_DEPLOYMENT.md](NETLIFY_DEPLOYMENT.md) and [WINDOWS_TESTING.md](WINDOWS_TESTING.md). Historical browser-only performance experiments below are not the current companion launch flow.
+
 # yourFittingRoom: local-first launch with a $25/month ceiling
 
-Planning date: 12 October 2026. Current launch scope: **desktop/laptop only, free local generation, a responsive web app, login at first generation, and a $25/month out-of-pocket ceiling**. Mobile inference and paid acceleration are deferred. This document proposes work; it does not enable cloud processing, purchase services, change the app or deploy anything.
+## Security hardening and release requirements — 13 October 2026
+
+[SECURITY_RELEASE_PLAN.md](SECURITY_RELEASE_PLAN.md) records concrete release gates and evidence. No universal malware-free guarantee is made. Fixed source checksums, bounded link/path-safe extraction, imported-source tamper rejection and complete prepared recognition artifact verification have been added. Mac registry dependencies and the pip bootstrap now use hash-locked binary-wheel installs; Windows remains an experimental pinned profile. Mac App Sandbox worker isolation, a fixed local photo workspace, revocation and supervised cancellation are now implemented and tested. Final signing/notarization, Windows isolation, broker sandboxing and independent review remain pending. Windows generation is disabled. See SECURITY_RELEASE_PLAN.md for current evidence.
+
+The current npm audit reports zero known vulnerabilities. Official PyPI release metadata reports no known advisories for 67 checked installed packages; the FASHN source-only package is outside that coverage. This is advisory checking, not malware detection or an independent security audit. The native package intentionally uses CPU ONNX instead of upstream onnxruntime-gpu; pip check flags that declared-dependency deviation. It needs reviewed package metadata in the production bundle.
+
+
+## Mac verification warning and Windows beta — 13 October 2026
+
+Unsigned .command downloads can be blocked by macOS because their developer/notarization cannot be verified. This is not itself a malware detection or a safety guarantee. Setup now explains Apple’s user-controlled per-app approval and distinguishes actual detected malware. No quarantine removal, Gatekeeper/antivirus disabling, execution-policy change, elevation or automatic approval is implemented. Signed/notarized Mac distribution remains unresolved.
+
+The app now offers a separate experimental Windows x86-64 ZIP with Set up.cmd / Start AI.cmd, Python 3.12 checks, explicit NVIDIA CUDA or slow CPU selection, pinned platform-specific Torch installation, fail-closed GPU readiness and the same loopback security boundary. It does not require Bash/WSL or PowerShell bypass. Mac generation remains tested; Windows installation, CUDA/CPU generation, downloaded-file protections and a signed Windows installer require validation on actual Windows hardware. No universal compatibility or latency promise is made.
+
+
+## Current implementation — downloadable companion, 13 October 2026
+
+The main app now uses the installed desktop companion only. The slow browser AI experiment is retained in source for development and is not offered in the normal setup flow. Download the Mac companion from the app, extract it, install Python 3.12 if needed, open **Set up.command** once, then **Start AI.command** each session and pair with explicit local-photo consent. Models are reused. Local operation requires no login, API key or per-image API fee; the user supplies hardware, disk space, bandwidth and electricity. The current web app remains local-only; distributing the companion does not host the website.
+
+The archive uses an explicit file allowlist, includes executable folder-relative launchers and a standalone setup guide, and excludes credentials, photos, weights and environments. Native processing binds only to loopback and keeps existing origin, session-ownership, expiry and payload protections. This is a technical beta (Mac tested, Windows experimental): clean installation on another device, wider hardware tests, licence review and a signed sandboxed installer remain public-release gates. Python code runs with the user's OS permissions. Mobile generation and guaranteed realistic fit are not supported.
+
+
+## Current hosting status — 13 October 2026
+
+Local development only. The user withdrew deployment permission and authorized disabling the hosted preview. The hosted application has been replaced with an offline-only HTTP 503 response; it serves no app assets, downloads or app APIs. The hosted signing secret has been removed. The hosting record and historical versions still exist because the available Sites connector has no unpublish/delete operation. Local project files and model files are retained. No future publication, source push to hosting, domain purchase or tester invitations are authorized without an explicit user instruction. See AGENTS.md.
+
+
+Planning date: 12 October 2026. Previous launch proposal: **desktop/laptop only, free local generation, a responsive web app, hosted login at first generation, and a $25/month out-of-pocket ceiling**. The current local companion flow requires pairing, not login. Mobile inference and paid acceleration are deferred. This document proposes work; it does not enable cloud processing, purchase services, change the app or deploy anything.
 
 ## Desktop web release gates
 
-Assume the preferred public experience is website-only, with an initial model download and no Python installation. Desktop scope alone does not provide that experience: our verified M5 generation still runs in an installed Python process. Browser conversion is the first release gate. If that gate fails, an explicitly installed desktop companion can support an earlier technical beta, but must not be presented as website-only generation.
+The earlier website-only proposal is superseded by the user-approved downloadable companion technical beta. A future website-only experience would still require browser validation. Desktop scope alone does not provide that experience: our verified M5 generation still runs in an installed Python process. Browser conversion is the first release gate. If that gate fails, an explicitly installed desktop companion can support an earlier technical beta, but must not be presented as website-only generation.
 
 | Priority | Required work | Current gap / acceptance evidence |
 | --- | --- | --- |
@@ -177,7 +205,7 @@ Prepared an owner-private desktop beta on the provided hosting subdomain, with n
 
 Current launch remains a controlled beta requiring companion installation. The hosted beta uses clothing-image upload; URL import is disabled there. A private audience gate can require sign-in before entry, even though app generation is the authentication trigger in the eventual publicly browsable experience. Keep the audience private until clean installation, managed authentication and browser local-network support are verified with friends. Do not claim completely secure systems or browser-only generation. See SECURITY.md for implemented protections and remaining public-release gates.
 
-Owner-private deployment is live at https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site. No external testers have been granted access. The published boundary checks passed; browser profile-sharing consent is pending. Invite friends only after the clean-install/browser compatibility gates.
+Former deployment address (application disabled): https://wearview-desktop-beta.kumar-ankush0796.chatgpt.site. No external testers have been granted access. The published boundary checks passed; browser profile-sharing consent is pending. Invite friends only after the clean-install/browser compatibility gates.
 
 ## Account usage and mutual isolation requirement — 13 October 2026
 
@@ -187,6 +215,47 @@ Visitors authenticate with their own accounts. Owner deployment/service credenti
 
 The companion API may process only explicitly selected images and manage the originating session's jobs. It must not expose file browsing, arbitrary paths/URLs, shell execution, remote desktop, LAN access or a remote-administration tunnel. Current hosted photo routes are disabled; pairing credentials remain in tab memory, and there is no owner-facing user-photo viewer.
 
-This is application-level isolation, not an operating-system sandbox. The installed Python companion runs with the user's OS permissions, and website code necessarily sees the selected images in that user's browser. Before public release, provide a reviewed, signed, sandboxed companion with least-privilege filesystem/network access and a secure update process. Do not promise that installing native code gives it zero device access or that an owner-controlled website can never be modified to collect data.
+The current Mac worker now has OS-enforced App Sandbox restrictions, while the broker/setup retain user permissions. Selected photos are handled in a fixed local UI with remote scripts disabled; the final UI/runtime still need legitimate signing. Windows generation is disabled until equivalent isolation is tested. Before public release, provide a reviewed, signed, sandboxed companion with least-privilege filesystem/network access and a secure update process. Do not promise that installing native code gives it zero device access or that an owner-controlled website can never be modified to collect data.
 
 Official distinction: identity scopes and ChatGPT plan usage are separate permissions: https://developers.openai.com/siwc/quickstart
+
+## Browser implementation experiment — 13 October 2026
+
+Implemented local-only consent, browser capability checks, fixed model delivery, integrity verification, model caching/clearing, worker isolation and real ONNX/WebGPU inference. Converted the installed clothing classifier, human parser and a 432×288 FASHN denoiser; the existing pose ONNX model runs in the same browser workflow. Runtime assets are served locally rather than from a CDN. Float64 rotary constants are converted to float32 to match the Mac adapter, and unsupported RMS normalization is lowered to standard GPU primitives. Models are loaded/released by pipeline phase to reduce memory pressure.
+
+The first setup downloads approximately 2.7 GB of models plus the browser runtime. Returning visits re-consent, verify cached files and execute actual GPU checks. There are no per-image API calls or owner ChatGPT credits involved. Device memory, bandwidth, battery and hosting/model-distribution costs still matter. The current browser pipeline is an experimental lower-resolution path, with whole-image pose crops and simplified rendering; it must not be marketed as quality-equivalent to the Python pipeline or as verified on all laptops.
+
+The hosted application remains disabled. No deployment or source push was performed for this experiment. Public readiness still requires device/performance/quality coverage, licenses, graceful storage/GPU recovery and distribution planning.
+
+## Browser try-on quality blocker — 13 October 2026
+
+The user completed a browser generation and manually reset afterward. They reported very poor quality and an excessive wait. Do not treat that reset as a crash or count the run as a successful product-quality test. Browser generation is not ready to release as a realistic fitting room.
+
+The current investigation corrects pose rendering and repeated float16 packing, adds observed model-step/timing information, and distinguishes execution checks from quality validation. A synthetic single-step CPU conversion check with correct tops conditioning differed from PyTorch by 0.333% relative RMS; this does not validate the browser's finished output. The model is exported at 432×288 rather than its native 864×576, with simplified whole-image pose crops. Restoring trained resolution may increase memory and latency, so merely raising resolution or steps is not an established solution.
+
+A concrete conditioning error was also found: browser tops used category 0 (unconditional) and dresses used 2 (bottoms). Fixed to match trained model IDs 1 (tops) and 3 (one-pieces), with a regression test. This error could substantially damage the result. Its exact visual impact and post-fix end-to-end runtime still require a completed image benchmark.
+
+Native reference evidence: a single M5 MPS run on bundled public sample photos at 432×288 completed loading in 2.86 seconds and preprocessing plus 20-step generation in 22.83 seconds. Its inspected output is a coherent person wearing the black T-shirt, with limited graphic detail. This rules out assuming resolution alone made the browser result unusable; it does not certify the browser or average latency. Browser execution checks, garment detection and upload/confirmation pass, but the corrected browser image benchmark is still outstanding.
+
+## Browser latency investigation — 13 October 2026
+
+The next user run was cancelled because it was too slow. Do not present the native 25.7-second total as a browser estimate. An isolated local synthetic denoiser benchmark measured approximately 49–51 seconds per original browser pass; basic graph optimisation alone did not help. The graph contains 28 standard-domain ONNX Attention operations, whereas the pinned WebGPU runtime supports the Microsoft-domain attention operators, causing expensive non-GPU processing. See the primary operator support table: https://github.com/microsoft/onnxruntime/blob/main/js/web/docs/webgpu-operators.md.
+
+GPU-compatible attention candidates run much faster, but installation is gated on numerical comparisons. Fused FP16/FP32 and a first expanded FP16 candidate failed the selected tolerance, and were not installed. The local benchmark uses only fixed synthetic tensors, accepts no photos, and runs separately on loopback port 3001 without refreshing or changing the original app/photo session. No deployment, cloud service or paid API is involved. Candidate experiments and timing JSON stay local.
+
+Complete candidate model-core tests on bundled public photos with native preprocessing took approximately 55 seconds total (50 seconds generation) twice. The inspected image is coherent, but background/details vary from the native reference. The candidate still failed the selected 1% numerical tolerance on public inputs (1.645% relative RMS), so the normal app retains its original graph and remains slow. This is a concrete staged optimisation, not an installed fix or production approval. Next: resolve cross-provider numerical differences and validate full browser pose/preprocessing across representative public outfits before promoting it. Do not cut steps, resolution or model precision solely to hide latency, and do not silently route to a companion/cloud service.
+
+## Performance execution order — 13 October 2026
+
+The current per-image wait is not acceptable for the intended fitting-room experience. A shorter progress animation, cached model downloads or a different loading message cannot remove repeated denoising compute. Treat 10–20 seconds as a proposed product target on supported hardware, not a measured capability, user-approved SLA or promised completion time. Do not launch the present slow browser generator to friends as ready.
+
+1. Resolve GPU execution and validate the staged faster graph on the full browser photo/pose/garment flow. The approximately 55-second candidate result used native preprocessing and is still only a model-core test. The 1% numerical threshold is an internal regression guard; 1.645% numerical drift does not mean a garment is 1.645% inaccurate or describe physical fit. Keep the failed check visible and evaluate identity, colour, pattern, garment boundaries, hands and background on representative public examples.
+2. Benchmark a session-resident denoiser and reuse fixed GPU conditioning buffers where memory permits. Time reading/verifying/loading, preprocessing and sampling separately. Residency saves repeated loading; it does not eliminate the roughly 50 seconds of candidate sampling. Release GPU resources explicitly on Stop AI/session end and handle low-memory devices gracefully.
+3. Evaluate a purpose-trained smaller or few-step try-on model if browser inference still misses the product target. The installed FASHN model documents 20 steps as its fast preset; simply choosing 4–10 steps is an unvalidated quality tradeoff. Research few-step models exist, but their available weights, licence, category coverage, input types, identity/garment fidelity, browser conversion and actual device timings must be verified before adoption. No replacement has been chosen or installed.
+4. For the fastest practical strict-local route with the existing model, package an explicitly installed native GPU companion with a signed, sandboxed installer and no terminal commands for users. This adds a one-time installation and therefore changes the website-only experience; it requires an explicit product decision and must not become a silent fallback. The 25.7-second M5 reference was one reduced-resolution sample; it does not certify high-resolution previews, other devices or a universal speed.
+
+Keep browser-only processing as the default preference while investigating. No paid/cloud API, private-photo export, deployment or new native installation is authorized by this performance plan. Re-viewing/downloading/comparing a completed result reuses it rather than regenerating. Broad device support and real-time/instant claims remain blocked until measured quality and latency pass together.
+
+Primary references: [FASHN implementation and presets](https://github.com/fashn-AI/fashn-vton-1.5), [few-step try-on research, not an installed solution](https://arxiv.org/abs/2606.29319).
+
+Next gate: compare identical supplied photos, masks, pose maps and initial noise across native and WebGPU paths; measure cold/warm preparation and inference separately; visually review person identity, garment shape, colour and graphics. Keep failed cases in a public-sample evaluation set, never retain private user photos for debugging by default. Evaluate native GPU packaging if acceptable browser quality and latency cannot be achieved. Any native installer or cloud alternative must be explicit; no silent fallback, paid integration or publication is authorized.

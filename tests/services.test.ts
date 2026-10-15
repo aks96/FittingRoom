@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {validateImage,validateProductUrl,garments,checkScope} from '../lib/services.ts';
+import {validateImage,validateProductUrl,garments,checkScope,localTryOn,compatibilityError,supportedCategories} from '../lib/services.ts';
 import {parseProduct,externalUrl,publicAddress} from '../lib/server/product-import.ts';
 test('sample sources remain separate and explicit',()=>{assert.notEqual(garments.Plum.originalUrl,garments.Sage.originalUrl);assert.notEqual(garments.Plum.image,garments.Sage.image)});
 test('file validation rejects unsupported, empty and oversized files',()=>{validateImage({type:'image/jpeg',size:100});for(const f of [{type:'image/svg+xml',size:100},{type:'image/png',size:10485761},{type:'image/png',size:0}])assert.throws(()=>validateImage(f))});
@@ -15,4 +15,5 @@ test('local image storage keeps the selected file bytes instead of a default ass
  try{const {createMemoryImageStorage}=await import('../lib/services.ts');const store=createMemoryImageStorage();const bytes=new Uint8Array([137,80,78,71,1,2,3,4]);const selected=new File([bytes],'user-dress.png',{type:'image/png'});const src=await store.add(selected);assert.match(src,/^blob:/);const read=await fetch(src);assert.deepEqual(new Uint8Array(await read.arrayBuffer()),bytes);assert.equal(read.headers.get('content-type'),'image/png');store.remove(src);await assert.rejects(fetch(src));}finally{globalThis.Image=previous}
 });
 
-test('men only accept T-shirts; womens current categories remain supported',()=>{assert.throws(()=>checkScope({...garments.Plum,audience:'Men',category:'Shirt'}),/T-shirts only/);checkScope({...garments.Plum,audience:'Men',category:'T-shirt'});for(const category of ['Top','Shirt','Dress'] as const)checkScope({...garments.Plum,audience:'Women',category});});
+test('all supported categories accept confirmed clothing ranges and reject unsupported garments',()=>{for(const category of supportedCategories)for(const audience of ['Women','Men','Unisex'] as const)checkScope({...garments.Plum,audience,category});assert.throws(()=>checkScope({...garments.Plum,audience:undefined}),/Confirm/);assert.throws(()=>checkScope({...garments.Plum,category:'Unsupported'}),/not supported/)});
+test('profile mismatch and missing declarations stop generation before any photo request',async()=>{const original=globalThis.fetch;let requests=0;globalThis.fetch=async()=>{requests++;throw new Error('No request expected')};try{await assert.rejects(localTryOn.start('person',garments.Plum,'balanced','Men'),/selected wearer profile is Men/);await assert.rejects(localTryOn.start('person',garments.Plum),/Choose the wearer profile/);assert.equal(requests,0);assert.equal(compatibilityError('Unisex','Men'),null);assert.equal(compatibilityError('Unisex','Women'),null)}finally{globalThis.fetch=original}});

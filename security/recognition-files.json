@@ -1,0 +1,35 @@
+{
+  "description": "Hashes of the locally prepared recognition artifacts. These are integrity baselines, not independent malware verification or publisher signatures. CLIP weights derive from the pinned safetensors revision in finish_setup.py. Reproducibility on other platforms must be tested.",
+  "files": [
+    {
+      "name": "parser/config.json",
+      "bytes": 1654,
+      "sha256": "87bd5b66419dbfa7c02cfbeb94e292454863b1606c5df29526b19a6c1de70d9f"
+    },
+    {
+      "name": "clip/config.json",
+      "bytes": 2129,
+      "sha256": "8d963783177a7ed9b883d546a28a63a9b37258f8e838641bc7ab2038d113d8d7"
+    },
+    {
+      "name": "clip/model.safetensors",
+      "bytes": 605156676,
+      "sha256": "d5853196afb60ca6373692d9af911aacd8fa821af6d4af54720d4eb9c8f5da0a"
+    },
+    {
+      "name": "clip/processor_config.json",
+      "bytes": 581,
+      "sha256": "38d5457ba35b9eee2b4fb2b8d3f151ca8cb5932348e6979d1c5d8f05966ce810"
+    },
+    {
+      "name": "clip/tokenizer.json",
+      "bytes": 3642073,
+      "sha256": "6d9109cc838977f3ca94a379eec36aecc7c807e1785cd729660ca2fc0171fb35"
+    },
+    {
+      "name": "clip/tokenizer_config.json",
+      "bytes": 389,
+      "sha256": "5bc12477f8da2ea8b22698daaeaf06ca5e4fef7848d414ba321a3d0025276432"
+    }
+  ]
+}
