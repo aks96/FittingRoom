@@ -3,8 +3,8 @@
   "packages": {
     "mac": {
       "filename": "yourFittingRoom-companion.tar.gz",
-      "bytes": 10248688,
-      "sha256": "15a60a5cf11a3af72c140e4a7a1d21aa237d52f3653635a1d31d2282cbff8398",
+      "bytes": 10247719,
+      "sha256": "c98e8f9862caa18904c5ae4beba6f3532a3e410754a781ee9394380de30216d2",
       "fileCount": 58,
       "folder": "yourFittingRoom-companion",
       "setup": "Set up.command",
@@ -14,8 +14,8 @@
     },
     "windows": {
       "filename": "yourFittingRoom-companion-windows.zip",
-      "bytes": 10233791,
-      "sha256": "d1860666b310b1d52b01bda6daacaadefa70018186ae4e4dfc064ee83d91af63",
+      "bytes": 10232777,
+      "sha256": "58c335adff210237c1e861fd04c70318c473ab583e478f9589ec9ed618c2ef77",
       "fileCount": 70,
       "folder": "yourFittingRoom-companion",
       "setup": "Set up.cmd",
